@@ -17,7 +17,9 @@ const NavbarComponent = () => {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            <Nav.Link href="#">TV Shows</Nav.Link>
+            <Nav.Link as={Link} to="/tv-shows">
+              TV Shows
+            </Nav.Link>
             <Nav.Link href="#">Movies</Nav.Link>
             <Nav.Link href="#">Recently Added</Nav.Link>
             <Nav.Link href="#">My List</Nav.Link>

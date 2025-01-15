@@ -1,38 +1,80 @@
 import { useState, useEffect } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "../style.css";
 
 const MovieGallery = ({ searchQuery }) => {
   const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const response = await fetch(
           `https://www.omdbapi.com/?apikey=766db7eb&s=${searchQuery}`
         );
         const data = await response.json();
-        setMovies(data.Search ? data.Search.slice(0, 6) : []);
+        if (data.Response === "True") {
+          setMovies(data.Search ? data.Search.slice(0, 6) : []);
+        } else {
+          setMovies([]);
+        }
       } catch (error) {
-        console.error("Error fetching movies:", error);
+        setError("Error fetching movies.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMovies();
   }, [searchQuery]);
 
+  if (loading) {
+    return (
+      <div className="text-center">
+        <Spinner animation="border" variant="primary" />
+        <p>Caricamento👾</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center">
+        <Alert variant="danger">{error}</Alert>
+      </div>
+    );
+  }
+
+  if (movies.length === 0) {
+    return (
+      <div className="text-center">
+        <Alert variant="warning">
+          Nessun risultato trovato per "{searchQuery}" 😩
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="movie-gallery my-2 mx-5">
+      <h2>Risultati di ricerca per "{searchQuery}"</h2>
       <Row className="g-4">
         {movies.map((movie) => (
           <Col key={movie.imdbID} xs={6} md={4} lg={2} className="text-center">
             <div className="card-container">
-              <img
-                src={
-                  movie.Poster !== "N/A" ? movie.Poster : "default-image.jpg"
-                }
-                alt={movie.Title}
-              />
+              <Link to={`/movie-details/${movie.imdbID}`}>
+                <img
+                  src={
+                    movie.Poster !== "N/A" ? movie.Poster : "default-image.jpg"
+                  }
+                  alt={movie.Title}
+                  className="img-fluid"
+                />
+              </Link>
             </div>
           </Col>
         ))}

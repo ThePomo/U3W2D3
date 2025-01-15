@@ -6,13 +6,19 @@ import MovieGallery from "./components/MovieGallery";
 import ProfilePage from "./components/ProfilePage";
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import TVShows from "./components/TvShows";
+import MovieDetails from "./components/MovieDetails";
 const App = () => {
   console.log("App component rendered");
 
   return (
     <Router>
       <Navbar />
+      <Routes>
+        <Route path="/" element={<></>} />
+        <Route path="/tv-shows" element={<TVShows />} />
+        <Route path="/movie-details/:movieId" element={<MovieDetails />} />
+      </Routes>
       <Routes>
         <Route
           path="/"
